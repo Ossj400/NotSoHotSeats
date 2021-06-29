@@ -43,12 +43,36 @@ namespace NotSoHotSeats_
 
         private void MouseEnters(object sender, RoutedEventArgs e)
         {
-            _manager.VisualizationWhenMouseEnters(date, sender as ContentControl);
+            try
+            {
+                _manager.VisualizationWhenMouseEnters(date, sender as ContentControl);
+            }
+            catch (Exception ex)
+            {
+                dialogHost.IsOpen = true;
+                var txtBlock = dialogHost.FindName("textBlockDialog") as TextBlock;
+                txtBlock.Text = ex.Message;
+                SoundPlayer sound = new SoundPlayer(Environment.CurrentDirectory + "\\wrong.wav");
+                sound.Play();
+            }
         }
         private void MouseLeaves(object sender, RoutedEventArgs e)
         {
-            _manager.VisualizationWhenMouseEnters(date, sender as ContentControl, true);
-            _manager.SetContentForSeats(date, GetWindow(this));
+            try
+            {
+                _manager.VisualizationWhenMouseEnters(date, sender as ContentControl, true);
+                //_manager.SetContentForSeats(date, sender as ContentControl); can be used only when DB is fast
+                _manager.SetContentForSeat(date, sender as ContentControl);
+            }
+
+            catch (Exception ex)
+            {
+                dialogHost.IsOpen = true;
+                var txtBlock = dialogHost.FindName("textBlockDialog") as TextBlock;
+                txtBlock.Text = ex.Message;
+                SoundPlayer sound = new SoundPlayer(Environment.CurrentDirectory + "\\wrong.wav");
+                sound.Play();
+            }
         }
 
         private childItem FindVisualChild<childItem>(DependencyObject obj)

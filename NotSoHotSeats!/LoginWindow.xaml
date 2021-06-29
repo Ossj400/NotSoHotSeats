@@ -56,7 +56,7 @@
                 <PasswordBox x:Name="Password"  Margin="0,10" materialDesign:HintAssist.Hint="Hasło" Style="{StaticResource MaterialDesignFloatingHintPasswordBox}" FontFamily="Champagne &amp; Limousines" FontSize="18"/>
             </StackPanel>
         </Grid>
-        <Button Width="150" HorizontalAlignment="Center" Click="LoginBtnClick" VerticalAlignment="Bottom" Margin="0,65" Content="Zaloguj się"/>
+        <Button Width="150" HorizontalAlignment="Center" IsDefault="True" Click="LoginBtnClick" VerticalAlignment="Bottom" Margin="0,65" Content="Zaloguj się"/>
         <TextBlock Text="Nie masz konta?" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="30" Foreground="WhiteSmoke" Cursor="Hand"/>
         <Button Width="200" FontSize="20" Click="RegisterButton" Panel.ZIndex="1" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,65,0,0" Content="Zarejestruj się" Height="50"/>
 

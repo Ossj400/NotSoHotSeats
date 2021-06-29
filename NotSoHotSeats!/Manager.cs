@@ -103,6 +103,54 @@ namespace NotSoHotSeats_
                 }
             }
         }
+        public void SetContentForSeat(DateTime pickedDate, DependencyObject obj)
+        {
+
+            var control = obj as ContentControl;
+            Thickness thicknessTaken = new Thickness(2);
+            Thickness thickness = new Thickness(1);
+
+                SolidColorBrush brush = new SolidColorBrush();
+                SolidColorBrush borderBrush = new SolidColorBrush();
+                Seat seat = context.GetSeat(control.Name);
+                bool seatTaken = context.IsSeatTaken(seat, pickedDate);
+                var takebBy = context.GetUserFromSeat(seat, pickedDate);
+
+                var levelBeforeBorder = VisualTreeHelper.GetChild(control, 0);
+                var border = VisualTreeHelper.GetChild(levelBeforeBorder, 0) as Border;
+                var childForGetTextbox = border.Child;
+                var txtBlock = VisualTreeHelper.GetChild(childForGetTextbox, 0) as TextBlock;
+                var txtBox = VisualTreeHelper.GetChild(childForGetTextbox, 1) as TextBox;
+
+                if (!seatTaken)
+                {
+                    txtBlock.Text = seat.SeatSymbol;
+                    txtBox.Text = "";
+                    brush.Color = Colors.Green;
+                    border.BorderThickness = thickness;
+                    border.BorderBrush = brush;
+                }
+
+                if (seatTaken && takebBy.IdUser != UserLogged.IdUser)
+                {
+                    var user = context.GetUserFromSeat(seat, pickedDate);
+                    txtBlock.Text = seat.SeatSymbol;
+                    txtBox.Text = (user.FirstName + ' ' + user.LastName);
+                    brush.Color = Colors.MediumVioletRed;
+                    border.BorderThickness = thicknessTaken;
+                    border.BorderBrush = brush;
+                }
+                if (seatTaken && takebBy.IdUser == UserLogged.IdUser)
+                {
+                    var user = context.GetUserFromSeat(seat, pickedDate);
+                    txtBlock.Text = seat.SeatSymbol;
+                    txtBox.Text = (user.FirstName + ' ' + user.LastName);
+                    brush.Color = Colors.Aquamarine;
+                    border.BorderThickness = thicknessTaken;
+                    border.BorderBrush = brush;
+                }
+
+        }
 
         public void VisualizationWhenMouseEnters(DateTime pickedDate, DependencyObject obj, bool mouseLeaves = false)
         {
@@ -115,6 +163,8 @@ namespace NotSoHotSeats_
             Seat seat = context.GetSeat(seatBtn.Name);
             bool seatTaken = context.IsSeatTaken(seat, pickedDate);
             var takebBy = context.GetUserFromSeat(seat, pickedDate);
+            Thickness thicknessTaken = new Thickness(2);
+            Thickness thickness = new Thickness(1);
             if (!seatTaken)
             {
                 ColorAnimationUsingKeyFrames myColorAnimation = new ColorAnimationUsingKeyFrames();
@@ -133,6 +183,8 @@ namespace NotSoHotSeats_
                 border.BorderBrush = brush;
                 brush.Color = Colors.GreenYellow;
                 border.Background = brush;
+                border.UpdateLayout();
+
             }
 
             if (seatTaken)
@@ -144,13 +196,15 @@ namespace NotSoHotSeats_
                      SolidColorBrush newBrush = (SolidColorBrush)newColor;
                      Color myColorFromBrush = newBrush.Color;
                      myColorAnimation.ColorAnimationWhenMouseLeave(myColorFromBrush);
-                 }
+                    border.BorderThickness = thicknessTaken;
+                }
                 if (mouseLeaves && takebBy.IdUser == UserLogged.IdUser)
                 {
                     Brush newColor = border.Background;
                     SolidColorBrush newBrush = (SolidColorBrush)newColor;
                     Color myColorFromBrush = newBrush.Color;
                     myColorAnimation.ColorAnimationWhenMouseLeaveUserLoggedReservation(myColorFromBrush);
+                    border.BorderThickness = thicknessTaken;
                 }
 
                 if (!mouseLeaves && takebBy.IdUser != UserLogged.IdUser)
